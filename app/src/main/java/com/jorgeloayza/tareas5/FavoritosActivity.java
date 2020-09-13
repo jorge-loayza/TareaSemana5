@@ -11,13 +11,16 @@ import com.jorgeloayza.tareas5.R;
 import com.jorgeloayza.tareas5.adapter.MascotaAdaptador;
 import com.jorgeloayza.tareas5.db.ConstructorMascotas;
 import com.jorgeloayza.tareas5.pojo.Mascota;
+import com.jorgeloayza.tareas5.presentador.FavoritosPresenter;
+import com.jorgeloayza.tareas5.presentador.IFavoritosPresenter;
 
 import java.util.ArrayList;
 
-public class FavoritosActivity extends AppCompatActivity {
-    ArrayList<Mascota> mascotasFavoritas;
+public class FavoritosActivity extends AppCompatActivity  implements IFavoritosActivityView{
+    //ArrayList<Mascota> mascotasFavoritas;
     private RecyclerView rvMascotasFavoritas;
-    private ConstructorMascotas constructorMascotas;
+    //private ConstructorMascotas constructorMascotas;
+    private IFavoritosPresenter iFavoritosPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +41,35 @@ public class FavoritosActivity extends AppCompatActivity {
         mascotasFavoritas.add(new Mascota("Cookie",160,R.drawable.foto3));
         mascotasFavoritas.add(new Mascota("Cookie",150,R.drawable.dog3_logo));
 */
-        constructorMascotas = new ConstructorMascotas(this);
-        mascotasFavoritas = constructorMascotas.obtenerMascotas();
+        //constructorMascotas = new ConstructorMascotas(this);
+        //mascotasFavoritas = constructorMascotas.obtenerMascotas();
 
 
 
         rvMascotasFavoritas = findViewById(R.id.rvMacotasFavoritas);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(RecyclerView.VERTICAL);
-        rvMascotasFavoritas.setLayoutManager(llm);
 
-        MascotaAdaptador mascotaAdaptador = new MascotaAdaptador(mascotasFavoritas);
-        rvMascotasFavoritas.setAdapter(mascotaAdaptador);
+
+        iFavoritosPresenter = new FavoritosPresenter(this,this);
+
+
     }
 
 
+    @Override
+    public void generarLinearLayoutVertical() {
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(RecyclerView.VERTICAL);
+        rvMascotasFavoritas.setLayoutManager(llm);
+    }
 
+    @Override
+    public MascotaAdaptador crearAdaptador(ArrayList<Mascota> mascotas) {
+        MascotaAdaptador mascotaAdaptador = new MascotaAdaptador(mascotas);
+        return mascotaAdaptador;
+    }
+
+    @Override
+    public void inicializarAdaptadorRV(MascotaAdaptador adaptador) {
+        rvMascotasFavoritas.setAdapter(adaptador);
+    }
 }
